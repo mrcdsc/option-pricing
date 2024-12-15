@@ -51,9 +51,9 @@ class BlackScholesModel:
     def __init__(self, S, K, T, r, sigma):
         self.S = S  # Current Price
         self.K = K  # Strike Price
-        self.T = T  # Tempo alla scadenza (in anni)
-        self.r = r  # Tasso di interesse privo di rischio
-        self.sigma = sigma  # Volatilità
+        self.T = T  # Time to expiration (in yrs)
+        self.r = r  # Risk Free Rate
+        self.sigma = sigma  # Volatilty
 
     def d1(self):
         return (np.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * np.sqrt(self.T))
