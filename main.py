@@ -23,7 +23,8 @@ def load_config():
 def retrieve(symbol, historical_data_period):
     try:
         ticker = yf.Ticker(symbol)
-        current_price = ticker.history(period="1d")['Close'].iloc[-1]
+        close_prices = ticker.history(period=historical_data_period)['Close'].tolist() 
+        current_price = close_prices[-1]
         historical_data = ticker.history(period=historical_data_period)
 
         # Volatility
@@ -42,9 +43,62 @@ def retrieve(symbol, historical_data_period):
         print(f"Error in data retrieving for {symbol}: {e}")
         return None, None, None, None
 
+def calculate_time_to_expiration(expiration_date):
+    current_date = datetime.now()
+    date_delta = expiration_date - current_date
+    return date_delta.days / 365.0
+
 ## Main ##
 
-def main():
-  symbol = input("Insert ticker (e.g. AAPL, TSLA): ").upper()
-  calls, puts = retrieve(symbol)
+class BlackScholesModel:
+    def __init__(self, S, K, T, r, sigma):
+        self.S = S  # Current Price
+        self.K = K  # Strike Price
+        self.T = T  # Tempo alla scadenza (in anni)
+        self.r = r  # Tasso di interesse privo di rischio
+        self.sigma = sigma  # Volatilità
+
+    def d1(self):
+        return (np.log(self.S / self.K) + (self.r + 0.5 * self.sigma ** 2) * self.T) / (self.sigma * np.sqrt(self.T))
     
+    def d2(self):
+        return self.d1() - self.sigma * np.sqrt(self.T)
+    
+    def call_option_price(self):
+        return (self.S * si.norm.cdf(self.d1(), 0.0, 1.0) - self.K * np.exp(-self.r * self.T) * si.norm.cdf(self.d2(), 0.0, 1.0))
+    
+    def put_option_price(self):
+        return (self.K * np.exp(-self.r * self.T) * si.norm.cdf(-self.d2(), 0.0, 1.0) - self.S * si.norm.cdf(-self.d1(), 0.0, 1.0))
+
+# MAIN FUNCTION !!! #
+def main():
+    
+    risk_free_rate, historical_data_period = load_config()
+    
+    symbol = input("Insert Ticker (es. AAPL, TSLA): ").upper()
+    
+    current_price, volatility, calls, puts = retrieve(symbol, historical_data_period)
+    
+    if current_price is not None and volatility is not None:
+        expiration_date_str = input("Inserisci la data di scadenza dell'opzione (formato: YYYY-MM-DD): ")
+        expiration_date = datetime.strptime(expiration_date_str, "%Y-%m-%d")
+        time_to_expiration = calculate_time_to_expiration(expiration_date)
+        strike_price = float(input(f"Inserisci il prezzo di strike per {symbol}: "))
+        
+        # Building our Black-Scholes Model #
+        bsm = BlackScholesModel(S=current_price, K=strike_price, T=time_to_expiration, r=risk_free_rate, sigma=volatility)
+        
+        call_price = bsm.call_option_price()
+        put_price = bsm.put_option_price()
+        
+        # Mostra i risultati
+        print(f"Current Price of the Asset: {current_price}")
+        print(f"Hist. Volatility: {volatility}")
+        print(f"Call Price: {call_price}")
+        print(f"Put Price: {put_price}")
+    else:
+        print("Can't computate the option pricing due to lack of sufficient information.")
+
+# Esegui il programma
+if __name__ == "__main__":
+    main()
