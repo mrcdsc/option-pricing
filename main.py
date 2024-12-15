@@ -79,10 +79,10 @@ def main():
     current_price, volatility, calls, puts = retrieve(symbol, historical_data_period)
     
     if current_price is not None and volatility is not None:
-        expiration_date_str = input("Inserisci la data di scadenza dell'opzione (formato: YYYY-MM-DD): ")
+        expiration_date_str = input("Insert the expiration date of the option (format: YYYY-MM-DD): ")
         expiration_date = datetime.strptime(expiration_date_str, "%Y-%m-%d")
         time_to_expiration = calculate_time_to_expiration(expiration_date)
-        strike_price = float(input(f"Inserisci il prezzo di strike per {symbol}: "))
+        strike_price = float(input(f"Insert {symbol}'s strike price (K): "))
         
         # Building our Black-Scholes Model #
         bsm = BlackScholesModel(S=current_price, K=strike_price, T=time_to_expiration, r=risk_free_rate, sigma=volatility)
