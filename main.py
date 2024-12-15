@@ -90,7 +90,6 @@ def main():
         call_price = bsm.call_option_price()
         put_price = bsm.put_option_price()
         
-        # Mostra i risultati
         print(f"Current Price of the Asset: {current_price}")
         print(f"Hist. Volatility: {volatility}")
         print(f"Call Price: {call_price}")
@@ -98,6 +97,5 @@ def main():
     else:
         print("Can't computate the option pricing due to lack of sufficient information.")
 
-# Esegui il programma
 if __name__ == "__main__":
     main()
