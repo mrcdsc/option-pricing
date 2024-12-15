@@ -20,16 +20,27 @@ def load_config():
   
 ## Data Retrieval Function ##
 
-def retrieve(symbol):
-  ticker = yf.ticker(symbol)
-  option_date = ticker.options
-  data = options.data(option_date[0])
-  if option_date:
-        data = ticker.option_chain(option_date[0])  oni
-        return data.calls, data.puts
-  else:
-        print("No option found for ticker {symbol}")
-        return None, None
+def retrieve(symbol, historical_data_period):
+    try:
+        ticker = yf.Ticker(symbol)
+        current_price = ticker.history(period="1d")['Close'].iloc[-1]
+        historical_data = ticker.history(period=historical_data_period)
+
+        # Volatility
+        returns = np.log(historical_data['Close'] / historical_data['Close'].shift(1)).dropna() # dropna() should avoid NaN errors or ZeroDivision
+        volatility = np.std(returns) * np.sqrt(252)  # 252 are the average trading days in the US
+        
+        # Options Chain Retrieval
+        option_dates = ticker.options
+        if option_dates:
+            data = ticker.option_chain(option_dates[0])
+            return current_price, volatility, data.calls, data.puts
+        else:
+            print(f"No option found for ticker {symbol}.")
+            return current_price, volatility, None, None
+    except Exception as e:
+        print(f"Error in data retrieving for {symbol}: {e}")
+        return None, None, None, None
 
 ## Main ##
 
