@@ -1,7 +1,6 @@
 import configparser
 import yfinance as yf
 import numpy as np
-import mplfinance as mpf
 import datetime
 from datetime import datetime
 import scipy.stats as si, stats
