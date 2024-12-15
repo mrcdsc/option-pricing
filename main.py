@@ -4,7 +4,7 @@ import numpy as np
 import mplfinance as mpf
 import datetime
 from datetime import datetime
-import scipy.stats as si
+import scipy.stats as si, stats
 
 ## Importing your Config ##
 
