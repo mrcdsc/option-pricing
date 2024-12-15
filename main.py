@@ -1,3 +1,4 @@
+import configparser
 import yfinance as yf
 import numpy as np
 import scipy.stats as stats
@@ -8,6 +9,15 @@ import datetime
 import tkinter as tk
 from tkinter import messagebox
 
+## Importing your Config ##
+
+def load_config():
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    risk_free_rate = float(config["DEFAULT"].get("risk_free_rate", 0.05)) # Default Value 5%  
+    historical_data_period = config["DEFAULT"].get("historical_data_period", "1y") # Default Time-Frame 1yr
+    return risk_free_rate, historical_data_period
+  
 ## Data Retrieval Function ##
 
 def retrieve(symbol):
