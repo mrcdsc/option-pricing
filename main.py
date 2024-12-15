@@ -1,8 +1,6 @@
 import configparser
 import yfinance as yf
 import numpy as np
-import scipy.stats as stats
-import matplotlib.pyplot as plot
 import mplfinance as mpf
 import datetime
 from datetime import datetime
