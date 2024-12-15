@@ -4,10 +4,9 @@ import numpy as np
 import scipy.stats as stats
 import matplotlib.pyplot as plot
 import mplfinance as mpf
-import plotly.graph_objects as graph
 import datetime
-import tkinter as tk
-from tkinter import messagebox
+from datetime import datetime
+import scipy.stats as si
 
 ## Importing your Config ##
 
