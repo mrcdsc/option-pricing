@@ -3,18 +3,14 @@ import yfinance as yf
 import numpy as np
 import datetime
 from datetime import datetime
-import scipy.stats as si, stats
-
-## Importing your Config ##
+import scipy.stats as si
 
 def load_config():
     config = configparser.ConfigParser()
     config.read("config.ini")
     risk_free_rate = float(config["DEFAULT"].get("risk_free_rate", 0.05)) # Default Value 5%  
     historical_data_period = config["DEFAULT"].get("historical_data_period", "1y") # Default Time-Frame 1yr
-    return risk_free_rate, historical_data_period
-  
-## Data Retrieval Function ##
+    return risk_free_rate, historical_data_period  
 
 def retrieve(symbol, historical_data_period):
     try:
@@ -44,8 +40,6 @@ def calculate_time_to_expiration(expiration_date):
     date_delta = expiration_date - current_date
     return date_delta.days / 365.0
 
-## Main ##
-
 class BlackScholesModel:
     def __init__(self, S, K, T, r, sigma):
         self.S = S  # Current Price
@@ -66,7 +60,6 @@ class BlackScholesModel:
     def put_option_price(self):
         return (self.K * np.exp(-self.r * self.T) * si.norm.cdf(-self.d2(), 0.0, 1.0) - self.S * si.norm.cdf(-self.d1(), 0.0, 1.0))
 
-# MAIN FUNCTION !!! #
 def main():
     
     risk_free_rate, historical_data_period = load_config()
@@ -81,7 +74,7 @@ def main():
         time_to_expiration = calculate_time_to_expiration(expiration_date)
         strike_price = float(input(f"Insert {symbol}'s strike price (K): "))
         
-        # Building our Black-Scholes Model #
+    
         bsm = BlackScholesModel(S=current_price, K=strike_price, T=time_to_expiration, r=risk_free_rate, sigma=volatility)
         
         call_price = bsm.call_option_price()
@@ -92,7 +85,7 @@ def main():
         print(f"Call Price: {call_price}")
         print(f"Put Price: {put_price}")
     else:
-        print("Can't computate the option pricing due to lack of sufficient information.")
+        print("Can't compute the option pricing due to lack of sufficient information.")
 
 if __name__ == "__main__":
     main()
