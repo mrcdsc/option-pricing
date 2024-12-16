@@ -20,7 +20,7 @@ def retrieve(symbol, historical_data_period):
         historical_data = ticker.history(period=historical_data_period)
 
         # Volatility
-        returns = np.log(historical_data['Close'] / historical_data['Close'].shift(1)).dropna() # dropna() should avoid NaN errors or ZeroDivision
+        returns = np.log(historical_data['Close'] / historical_data['Close'].shift(1)).dropna() 
         volatility = np.std(returns) * np.sqrt(252)  # 252 are the average trading days in the US
         
         # Options Chain Retrieval
