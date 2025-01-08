@@ -12,11 +12,11 @@ This project provides a simple interface to calculate the price of European opti
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/mrcdsc/option-pricing.git]
+   git clone https://github.com/mrcdsc/option-pricing.git
 
 2. Navigate to the project directory:
    ```bash
-   cd option-pricing-interface
+   cd option-pricing
 
 3. Install the required dependencies:
    ```bash
